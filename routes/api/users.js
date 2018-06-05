@@ -93,12 +93,13 @@ router.post('/login', (req, res) => {
         jwt.sign(
           payload,
           keys.secretOrKey,
-          { expiresIn: 3600 },
           (err, token) => {
             res.json({
               success: true,
-              token:'Bearer' + token
+              token:'Bearer ' + token
             });
+            console.log(token);
+            console.log(err);
           }
         );
       } else {
@@ -121,6 +122,8 @@ router.get(
       name: req.user.name,
       email: req.user.email
     });
+    //console.log(req);
+    //console.log(res);
   }
 );
 

@@ -64,13 +64,15 @@ router.get('/all', (req, res) => {
 // @access  Public
 
 router.get('/handle/:handle', (req, res) => {
-  console.log(req.params.handle);
+  console.log('working');
+  console.log('req.params.handle is '+req.params.handle);
   const errors = {};
   Profile.findOne({ handle: req.params.handle })
     .populate('user', ['name', 'avatar'])
     .then(profile => {
       if (!profile) {
         errors.noprofile = 'There is no profile for this user';
+        console.log('no profile');
         res.status(404).json(errors);
       }
 
@@ -108,9 +110,15 @@ router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-
+    console.log(req.body);
     const { errors, isValid } = validateProfileInput(req.body);
-    console.log(errors);
+
+    console.log('errors at start is '+errors);
+    Object.keys(errors).forEach(function(key) {
+    console.log(key, errors[key]);
+     });
+     console.log('After error');
+     console.log(req.body.skills);
 
     // Check Validation
     if (!isValid) {
@@ -129,10 +137,11 @@ router.post(
     if (req.body.status) profileFields.status = req.body.status;
     if (req.body.githubusername)
       profileFields.githubusername = req.body.githubusername;
-    // Skills - Spilt into array
+      // Skills - Spilt into array
     if (typeof req.body.skills !== 'undefined') {
       profileFields.skills = req.body.skills.split(',');
     }
+
 
     // Social
     profileFields.social = {};
