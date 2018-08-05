@@ -45,7 +45,7 @@ router.get(
 // @access  Public
 router.get('/all', (req, res) => {
   const errors = {};
-
+   console.log('Route being called');
   Profile.find()
     .populate('user', ['name', 'avatar'])
     .then(profiles => {

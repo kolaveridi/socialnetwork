@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 const db=require('./config/keys').mongoURI;
 // connect to mongodb
 mongoose
-.connect(db)
+.connect(db,{useNewUrlParser: true})
 .then(()=>console.log('MongoDb connected'))
 .catch(err=>console.log(err));
 //passport middleware

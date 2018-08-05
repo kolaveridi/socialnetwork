@@ -22,6 +22,7 @@ router.get('/test', (req, res) => res.json({ msg: 'Users Works' }));
 // @desc    Register user
 // @access  Public
 router.post('/register', (req, res) => {
+  console.log('req.body inside register route',req.body);
   const { errors, isValid } = validateRegisterInput(req.body);
 
   // Check Validation
@@ -30,6 +31,7 @@ router.post('/register', (req, res) => {
   }
 
   User.findOne({ email: req.body.email }).then(user => {
+    //console.log(req.body);
     if (user) {
       errors.email = 'Email already exists';
       return res.status(400).json(errors);
@@ -46,6 +48,7 @@ router.post('/register', (req, res) => {
         avatar,
         password: req.body.password
       });
+      console.log('newUser is',newUser);
 
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -77,6 +80,7 @@ router.post('/login', (req, res) => {
 
   // Find user by email
   User.findOne({ email }).then(user => {
+    console.log('User is',user);
     // Check for user
     if (!user) {
       errors.email = 'User not found';
