@@ -1,66 +1,119 @@
-import React ,{Component} from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import classnames from 'classnames';
+import { loginUser } from '../../actions/authActions';
 
-export default class Login extends Component{
-    constructor(props){
-        super(props);
-        this.state={
-            email:'',
-            password:'',
-            errors:{}
-        }
-        this.onChange=this.onChange.bind(this);
+class Login extends Component {
+  constructor() {
+    super();
+    this.state = {
+      email: '',
+      password: '',
+      errors: {}
+    };
+
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
     }
-    onChange=(e)=>{
-        this.setState({
-            [e.target.name]:e.target.value    
-            })
+  }
+  
+  componentWillReceiveProps(nextProps) {
+    console.log('nextProps.auth.isAuthenticated',nextProps.auth.isAuthenticated);
+    if (nextProps.auth.isAuthenticated) {
+      console.log('History thing');
+      this.props.history.push('/dashboard');
     }
-    onSubmit=(e)=>{
-        e.preventDefault();
-        const signingin={
-            email:this.state.email,
-            password:this.state.password
-        }
-        console.log(signingin);
-      }
-    render(){
-        return(
-         <div>
-           <div className="login">
-    <div className="container">
-      <div className="row">
-        <div className="col-md-8 m-auto">
-          <h1 className="display-4 text-center">Log In</h1>
-          <p className="lead text-center">Sign in to your DevConnector account</p>
-          <form onSubmit={this.onSubmit}>
-            <div className="form-group">
-              <input
-               type="email"
-               value={this.state.email}
-               onChange={this.onChange}
-                className="form-control form-control-lg"
-                 placeholder="Email Address" 
-                 name="email" />
+
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+
+    const userData = {
+      email: this.state.email,
+      password: this.state.password
+    };
+
+    this.props.loginUser(userData);
+  }
+
+  onChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
+  render() {
+    const { errors } = this.state;
+    console.log('this.props is',this.props);
+    console.log('this.props.auth.initialstate',this.props.auth.initialstate);
+
+    return (
+      <div className="login">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-8 m-auto">
+              <h1 className="display-4 text-center">Log In</h1>
+              <p className="lead text-center">
+                Sign in to your DevConnector account
+              </p>
+              <form onSubmit={this.onSubmit}>
+                <div className="form-group">
+                  <input
+                    type="email"
+                    className={classnames('form-control form-control-lg', {
+                      'is-invalid': errors.email
+                    })}
+                    placeholder="Email Address"
+                    name="email"
+                    value={this.state.email}
+                    onChange={this.onChange}
+                  />
+                  {errors.email && (
+                    <div className="invalid-feedback">{errors.email}</div>
+                  )}
+                </div>
+                <div className="form-group">
+                  <input
+                    type="password"
+                    className={classnames('form-control form-control-lg', {
+                      'is-invalid': errors.password
+                    })}
+                    placeholder="Password"
+                    name="password"
+                    value={this.state.password}
+                    onChange={this.onChange}
+                  />
+                  {errors.password && (
+                    <div className="invalid-feedback">{errors.password}</div>
+                  )}
+                </div>
+                <input type="submit" className="btn btn-info btn-block mt-4" />
+              </form>
             </div>
-            <div className="form-group">
-              <input 
-              value={this.state.password}
-              onChange={this.onChange}
-              type="password"
-               className="form-control form-control-lg"
-                placeholder="Password"
-                 name="password" />
-            </div>
-            <input 
-            type="submit" 
-            className="btn btn-info btn-block mt-4" />
-          </form>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-             </div>
-
-        );
-    }
+    );
+  }
 }
+
+Login.propTypes = {
+  loginUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(mapStateToProps, { loginUser })(Login);
