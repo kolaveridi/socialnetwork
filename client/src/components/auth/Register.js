@@ -35,6 +35,11 @@ class Register extends Component {
      this.props.registerUser(newUser,this.props.history);
      
   }
+   componentDidMount() {
+     if (this.props.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
+     }
+   }
   componentWillReceiveProps(nextProps){
       if(nextProps.errors){
         this.setState({errors:nextProps.errors})
@@ -44,8 +49,10 @@ class Register extends Component {
   render() {
     const { errors } = this.state;
     const {user}=this.props.auth;
-    console.log('this.props.errrors is',this.props.errors);
+    //console.log('this.props.auth is',this.props.auth);
+   // console.log('this.props.errrors is',this.props.errors);
     console.log('this.props.auth is',this.props.auth);
+   // console.log('this.props.auth.isAuthenticated is',this.props.auth.isAuthenticated);
 
     return (
       <div className="register">
