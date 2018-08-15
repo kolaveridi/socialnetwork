@@ -17,6 +17,20 @@ export const getCurrentProfile =()=>dispatch=>{
       })
     );
 }
+// create new Profile  
+// we pass profileData which is actually the data and history to move from one point to another 
+// if data gets submitted to database correctly we move to dashboard page 
+export const createProfile=(profileData,history)=>dispatch =>{
+    console.log('profileData inside action is ',profileData);
+  axios.post('/api/profile',profileData)
+  .then (res=>history.push('/dashboard'))
+  .catch(err => dispatch({
+      type:GET_ERRORS,
+      payload:err.response.data
+  })
+);
+
+}
 //profile loading
 export const setProfileLoading =()=>{
     return {

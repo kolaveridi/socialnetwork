@@ -5,7 +5,9 @@ import TextFieldGroup from '../common/TextFieldGroup';
 import TextAreaFieldGroup from '../common/TextAreaFieldGroup';
 import InputGroup from '../common/InputGroup';
 import SelectListGroup from '../common/SelectListGroup';
-class CreateProfile extends Component{
+import {createProfile} from '../../actions/profileAction';
+import {withRouter} from 'react-router-dom';
+class CreateProfiles extends Component{
     constructor(props){
         
         super(props);
@@ -27,8 +29,13 @@ class CreateProfile extends Component{
           errors:{}
         }
         this.onChange=this.onChange.bind(this);
-        this.onSubmit=this.onChange.bind(this);
+        this.onSubmit=this.onSubmit.bind(this);
     }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.errors) {
+          this.setState({ errors: nextProps.errors });
+        }
+      }
     onSubmit(e){
         e.preventDefault();
         console.log('Submit');
@@ -47,11 +54,15 @@ class CreateProfile extends Component{
             youtube: this.state.youtube,
             instagram: this.state.instagram
           };
+          console.log('profileData is',profileData);
+          // note how this.props.history is used to move from one place to another
+          this.props.createProfile(profileData, this.props.history);
     }
     onChange(e){
         this.setState({[e.target.name]:e.target.value})
     }
     render(){
+        console.log('this.props is',this.props);
        let socialInputs;
         const {errors,displaySocialInputs}=this.state;
         if (displaySocialInputs) {
@@ -231,4 +242,5 @@ const mapStateToProps = state =>({
   profile:state.profile,
   errors:state.errors
 });
-export default connect(null)(CreateProfile);
+// always wrap the action in {}
+export default connect(mapStateToProps,{createProfile})(withRouter(CreateProfiles));
