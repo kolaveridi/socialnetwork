@@ -14,7 +14,7 @@ class CreateProfiles extends Component{
         this.state={
           displaySocialInputs:false,
           handle:'',
-          compnay:'',
+          company:'',
           website:'',
           location:'',
           status:'',
